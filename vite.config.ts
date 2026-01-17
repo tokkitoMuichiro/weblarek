@@ -4,9 +4,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        loadPaths: [
-          './src/scss'
-        ],
+        loadPaths: ['./src/scss'],
       },
     },
   },
