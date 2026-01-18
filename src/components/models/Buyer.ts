@@ -1,73 +1,69 @@
-import { IBuyer, TPayment, ValidationInfo } from '../../types'
+import { IBuyer, TPayment, IValidationInfo } from '../../types'
 
 export class Buyer {
-  private _payment: TPayment | null = null
+  private payment: TPayment | '' = ''
 
-  private _email: string | null = null
+  private email: string = ''
 
-  private _phone: string | null = null
+  private phone: string = ''
 
-  private _address: string | null = null
+  private address: string = ''
 
-  constructor(buyerData?: Partial<IBuyer>) {
-    if (buyerData) {
-      this.setBuyerInfo(buyerData)
-    }
-  }
+  constructor() {}
 
   setBuyerInfo(buyerData: Partial<IBuyer>): void {
     if (buyerData) {
       if (buyerData.payment) {
-        this._payment = buyerData.payment
+        this.payment = buyerData.payment
       }
       if (buyerData.email) {
-        this._email = buyerData.email
+        this.email = buyerData.email
       }
       if (buyerData.phone) {
-        this._phone = buyerData.phone
+        this.phone = buyerData.phone
       }
       if (buyerData.address) {
-        this._address = buyerData.address
+        this.address = buyerData.address
       }
     }
   }
 
-  getBuyerInfo(): Partial<IBuyer> {
+  getBuyerInfo(): IBuyer {
     return {
-      ...(this._payment && { payment: this._payment }),
-      ...(this._email && { email: this._email }),
-      ...(this._phone && { phone: this._phone }),
-      ...(this._address && { address: this._address }),
+      payment: this.payment,
+      email: this.email,
+      phone: this.phone,
+      address: this.address,
     }
   }
 
   clearBuyerInfo(): void {
-    this._payment = null
-    this._email = null
-    this._phone = null
-    this._address = null
+    this.payment = ''
+    this.email = ''
+    this.phone = ''
+    this.address = ''
   }
 
-  validateBuyerInfo(): ValidationInfo | String {
-    const validationInfo: ValidationInfo = {}
+  validateBuyerInfo(): IValidationInfo | String {
+    const validationInfo: IValidationInfo = {}
     let hasErrors = false
 
-    if (!this._payment) {
+    if (!this.payment) {
       validationInfo.payment = 'Не выбран вид оплаты'
       hasErrors = true
     }
 
-    if (!this._email) {
+    if (!this.email) {
       validationInfo.email = 'Не заполнен Email'
       hasErrors = true
     }
 
-    if (!this._phone) {
+    if (!this.phone) {
       validationInfo.phone = 'Не заполнен телефон'
       hasErrors = true
     }
 
-    if (!this._address) {
+    if (!this.address) {
       validationInfo.address = 'Не заполнен адрес'
       hasErrors = true
     }

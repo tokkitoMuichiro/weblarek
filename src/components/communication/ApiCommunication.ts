@@ -1,4 +1,4 @@
-import { IApi, IProduct, ApiProductsResponse, ApiBuyerSending, ApiBuyerResponse } from '../../types'
+import { IApi, IProduct, TApiProductsResponse, IApiBuyerSending, TApiBuyerResponse } from '../../types'
 export class ApiCommunication {
   private _api: IApi
 
@@ -8,16 +8,16 @@ export class ApiCommunication {
 
   async getProducts(): Promise<IProduct[]> {
     try {
-      const response = await this._api.get<ApiProductsResponse>('/product/')
+      const response = await this._api.get<TApiProductsResponse>('/product/')
       return response.items
     } catch (error) {
       throw new Error(`Не удалось получить данные о товарах с сервера`)
     }
   }
 
-  async createOrder(sendingInfo: ApiBuyerSending): Promise<ApiBuyerResponse> {
+  async createOrder(sendingInfo: IApiBuyerSending): Promise<TApiBuyerResponse> {
     try {
-      const response = await this._api.post<ApiBuyerResponse>('/order/', sendingInfo)
+      const response = await this._api.post<TApiBuyerResponse>('/order/', sendingInfo)
       return response
     } catch (error) {
       throw new Error(`Возникла ошибка при создании заказа`)

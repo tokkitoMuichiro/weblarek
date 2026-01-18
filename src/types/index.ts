@@ -21,26 +21,26 @@ export interface IBuyer {
   address: string
 }
 
-export type TPayment = 'card' | 'cash'
+export type TPayment = 'card' | 'cash' | ''
 
-export interface ValidationInfo {
+export interface IValidationInfo {
   payment?: string
   email?: string
   phone?: string
   address?: string
 }
 
-export type ApiProductsResponse = {
+export type TApiProductsResponse = {
   total: number
   items: IProduct[]
 }
 
-export type ApiBuyerSending = IBuyer & {
+export interface IApiBuyerSending extends IBuyer {
   total: number
   items: string[]
 }
 
-export type ApiBuyerResponse = {
+export type TApiBuyerResponse = {
   id: string
   total: number
 }

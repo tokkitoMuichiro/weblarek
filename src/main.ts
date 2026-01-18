@@ -54,6 +54,10 @@ function testModels(): void {
 
   cart.removeProduct(testProductId)
   console.log('Количество товаров после удаления:', cart.getTotalProducts())
+  console.log(
+    'Товары в корзине после удаления',
+    cart.getProducts().map(item => item.title),
+  )
 
   // Очистка корзины
   cart.removeShoppingCart()
@@ -86,9 +90,16 @@ document.addEventListener('DOMContentLoaded', () => {
 // Проверка получения данных о товарах с сервера
 
 const api = new Api(API_URL)
-
 const apiCommunication = new ApiCommunication(api)
+const productListApiTest = new ProductList()
 
-const products = await apiCommunication.getProducts()
-
-console.log(products)
+try {
+  const products = await apiCommunication.getProducts()
+  productListApiTest.setProducts(products)
+  console.log(
+    'Инициализированные товары:',
+    productListApiTest.getProducts().map(item => item.title),
+  )
+} catch (error) {
+  console.log(error)
+}
