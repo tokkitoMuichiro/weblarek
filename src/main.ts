@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Проверка получения данных о товарах с сервера
 
 const api = new Api(API_URL)
+
 const apiCommunication = new ApiCommunication(api)
 const productListApiTest = new ProductList()
 

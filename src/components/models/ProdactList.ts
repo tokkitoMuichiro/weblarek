@@ -15,9 +15,6 @@ export class ProductList {
   }
 
   getProductById(id: string): IProduct | undefined {
-    if (!this.products) {
-      return undefined
-    }
     return this.products.find(product => product.id === id)
   }
 

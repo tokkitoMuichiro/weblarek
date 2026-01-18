@@ -68,6 +68,6 @@ export class Buyer {
       hasErrors = true
     }
 
-    return hasErrors ? validationInfo : 'Вся информация заполнена'
+    return validationInfo
   }
 }
