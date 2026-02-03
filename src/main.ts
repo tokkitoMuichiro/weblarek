@@ -1,106 +1,64 @@
 import './scss/styles.scss'
 import { apiProducts } from './utils/data'
 import { ProductList } from './components/models/ProdactList'
-import { ShoppingCart } from './components/models/ShoppingCart'
+import { ShoppingCart, ShoppingCart } from './components/models/ShoppingCart'
 import { Buyer } from './components/models/Buyer'
 import { ApiCommunication } from './components/communication/ApiCommunication'
 import { Api } from './components/base/Api'
 import { API_URL } from './utils/constants'
+import { EventEmitter } from './components/base/Events'
+import { Basket } from './components/view/Basket'
+import { Gellery } from './components/view/Gellery'
+import { cloneTemplate } from './utils/utils'
+import { HeaderBasket } from './components/view/HeaderBasket'
+import { CardBasket } from './components/view/Cards_component/CardBasket'
+import { CardCatalog } from './components/view/Cards_component/CardCatalog'
+import { ensureElement } from './utils/utils'
+import { ModalContainer } from './components/view/ModalContainer'
+import { CardPreviev } from './components/view/Cards_component/CardPreviev'
+import { PaymentForm } from './components/view/Form_components/PaymentForm'
+import { ContactForm } from './components/view/Form_components/ContactsForm'
 
-function testModels(): void {
-  console.log('=== Тестирование моделей данных ===\n')
-
-  // 1. Тестирование ProductList
-  console.log('1. Тестирование ProductList')
-  const productList = new ProductList()
-  productList.setProducts(apiProducts.items)
-
-  console.log('Массив товаров из каталога:', productList.getProducts())
-
-  // Поиск товара по ID
-  const sampleProductId = apiProducts.items[0].id
-  const foundProduct = productList.getProductById(sampleProductId)
-  console.log(`Найден товар с ID "${sampleProductId}":`, foundProduct?.title)
-
-  // Сохранение выбранного товара
-  if (foundProduct) {
-    productList.setSelectedProduct(foundProduct)
-    console.log('Выбранный товар:', productList.getSelectedProduct()?.title)
-  }
-
-  console.log('\n---\n')
-
-  // 2. Тестирование ShoppingCart
-  console.log('2. Тестирование ShoppingCart')
-  const cart = new ShoppingCart()
-
-  // Добавление товаров в корзину
-  apiProducts.items.slice(0, 2).forEach(product => {
-    cart.addProduct(product)
-  })
-
-  console.log(
-    'Товары в корзине:',
-    cart.getProducts().map(item => item.title),
-  )
-  console.log('Количество товаров в корзине:', cart.getTotalProducts())
-  console.log('Общая стоимость корзины:', cart.getProductsPrise())
-
-  // Проверка наличия товара
-  const testProductId = apiProducts.items[0].id
-  console.log(`Товар с ID "${testProductId}" в корзине:`, cart.hasProductById(testProductId))
-
-  // Удаление товара
-
-  cart.removeProduct(testProductId)
-  console.log('Количество товаров после удаления:', cart.getTotalProducts())
-  console.log(
-    'Товары в корзине после удаления',
-    cart.getProducts().map(item => item.title),
-  )
-
-  // Очистка корзины
-  cart.removeShoppingCart()
-  console.log('Колличество товаров после очитки:', cart.getTotalProducts())
-
-  console.log('\n---\n')
-
-  // 3. Тестирование Buyer
-  console.log('3. Тестирование Buyer')
-  const buyer = new Buyer()
-
-  buyer.setBuyerInfo({ email: 'anton@mail.ru,', phone: '8800555', address: 'SPB Vostaniya' })
-
-  console.log('Данные покупателя:', buyer.getBuyerInfo())
-  console.log('Валидность данных покупателя:', buyer.validateBuyerInfo())
-
-  // Очистка данных
-  buyer.clearBuyerInfo()
-  console.log('Данные покупателя после очистки:', buyer.getBuyerInfo())
-
-  console.log('\n=== Тестирование завершено ===')
-}
-
-// Запуск тестирования
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('Начало тестов')
-  testModels()
-})
-
-// Проверка получения данных о товарах с сервера
+// реализация presinter
 
 const api = new Api(API_URL)
-
 const apiCommunication = new ApiCommunication(api)
-const productListApiTest = new ProductList()
+
+const events = new EventEmitter()
+
+const productList = new ProductList(events)
+const buyerModel = new Buyer(events)
+const shoppingCartModel = new ShoppingCart(events)
+
+const pageContainer = document.body
+const gelleryView = new Gellery(pageContainer)
+const headerBasketView = new HeaderBasket(events, ensureElement<HTMLElement>('.header__container'))
+const modalContainerView = new ModalContainer(events, ensureElement<HTMLElement>('#modal-container'))
+
+//const cardBasketView = new CardBasket(events, cloneTemplate('#card-basket'))
+//const cardCatalogView = new CardCatalog(events, cloneTemplate('#card-catalog'))
+//const cardPrevievView = new CardPreviev(events, cloneTemplate('#card-preview'))
+
+const paymentFormView = new PaymentForm(events, cloneTemplate('#order'))
+const contactsFormView = new ContactForm(events, cloneTemplate('#contacts'))
 
 try {
   const products = await apiCommunication.getProducts()
-  productListApiTest.setProducts(products)
+  productList.setProducts(products)
   console.log(
     'Инициализированные товары:',
-    productListApiTest.getProducts().map(item => item.title),
+    productList.getProducts().map(item => item.title),
   )
 } catch (error) {
   console.log(error)
 }
+
+events.on('productList:changed', () => {
+  const products = productList.getProducts()
+  const cards = products.map(p => {
+    const cardView = new CardCatalog(events, cloneTemplate('#card-catalog'))
+    return cardView.render(p)
+  })
+
+  gelleryView.render({ productCards: cards })
+})

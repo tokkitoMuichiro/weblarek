@@ -1,4 +1,5 @@
 import { IBuyer, TPayment, IValidationInfo } from '../../types'
+import { IEvents } from '../base/Events'
 
 export class Buyer {
   private payment: TPayment | '' = ''
@@ -9,7 +10,7 @@ export class Buyer {
 
   private address: string = ''
 
-  constructor() {}
+  constructor(protected events: IEvents) {}
 
   setBuyerInfo(buyerData: Partial<IBuyer>): void {
     if (buyerData) {
@@ -26,6 +27,7 @@ export class Buyer {
         this.address = buyerData.address
       }
     }
+    this.events.emit('buyerInfo:changed', this.getBuyerInfo())
   }
 
   getBuyerInfo(): IBuyer {
@@ -42,6 +44,7 @@ export class Buyer {
     this.email = ''
     this.phone = ''
     this.address = ''
+    this.events.emit('buyerInfo:changed', this.getBuyerInfo())
   }
 
   validateBuyerInfo(): IValidationInfo | String {

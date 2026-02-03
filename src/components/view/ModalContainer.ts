@@ -13,7 +13,7 @@ export class ModalContainer extends Component<HTMLElement> {
     super(container)
 
     this.closeButton = ensureElement<HTMLButtonElement>('.modal__close', this.container)
-    this.contentContainer = ensureElement<HTMLElement>('.modal__contents', this.container)
+    this.contentContainer = ensureElement<HTMLElement>('.modal__content', this.container)
 
     this.closeButton.addEventListener('click', () => {
       this.closeModal()

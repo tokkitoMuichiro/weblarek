@@ -11,12 +11,10 @@ export class Gellery extends Component<IGellery> {
   constructor(container: HTMLElement) {
     super(container)
 
-    this.gelleryContainer = ensureElement<HTMLElement>('.gellery')
+    this.gelleryContainer = ensureElement<HTMLElement>('.gallery')
   }
 
   set productList(productCards: HTMLElement[]) {
-    productCards.forEach(card => {
-      this.gelleryContainer.append(card)
-    })
+    this.gelleryContainer.replaceChildren(...productCards)
   }
 }
