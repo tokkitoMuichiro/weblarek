@@ -2,19 +2,11 @@ import { Component } from '../../base/Component'
 import { ensureElement } from '../../../utils/utils'
 import { categoryMap } from '../../../utils/constants'
 import { IEvents } from '../../base/Events'
+import { IProduct } from '../../../types'
 
 type categoryKeys = 'софт-скил' | 'хард-скил' | 'кнопка' | 'дополнительное' | 'другое'
 
-interface ICard {
-  id: string
-  description: string
-  image: string
-  title: string
-  category: string
-  price: number | null
-}
-
-export abstract class Card extends Component<ICard> {
+export abstract class Card extends Component<IProduct> {
   protected titleElement: HTMLElement
   protected categoryElement?: HTMLElement
   protected priceElement: HTMLElement

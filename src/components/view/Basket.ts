@@ -3,9 +3,9 @@ import { ensureElement } from '../../utils/utils'
 import { IEvents } from '../base/Events'
 
 export class Basket extends Component<HTMLElement> {
-  protected basketList: HTMLElement
-  protected orderButton: HTMLButtonElement
-  protected orderPrice: HTMLElement
+  private basketList: HTMLElement
+  private orderButton: HTMLButtonElement
+  private orderPrice: HTMLElement
 
   constructor(
     protected events: IEvents,

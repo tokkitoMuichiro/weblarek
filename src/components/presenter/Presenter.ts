@@ -64,10 +64,6 @@ export class Presenter {
       this.renderBasketState()
     })
 
-    this.events.on('buyerInfo:changed', () => {
-      // Buyer info updates can be used for debugging or future UI sync
-    })
-
     this.events.on<{ id?: string }>('card:select', data => {
       if (!data?.id) {
         return
@@ -109,7 +105,6 @@ export class Presenter {
       this.views.modalContainerView.openModal()
     }
 
-    this.events.on('basket.open', openBasket)
     this.events.on('basket:open', openBasket)
 
     const openPayment = () => {
@@ -117,7 +112,6 @@ export class Presenter {
       this.views.modalContainerView.openModal()
     }
 
-    this.events.on('basket: order', openPayment)
     this.events.on('basket:order', openPayment)
 
     this.events.on<Partial<IBuyer>>('order:change', data => {
@@ -178,7 +172,7 @@ export class Presenter {
       const cardView = new CardCatalog(this.events, cloneTemplate('#card-catalog'))
       return cardView.render({
         ...product,
-        image: `${CDN_URL}${product.image}`,
+        image: `${CDN_URL}${product.image.replace('.svg', '.png')}`,
       })
     })
 
@@ -194,7 +188,7 @@ export class Presenter {
     const cardView = new CardPreviev(this.events, cloneTemplate('#card-preview'))
     const card = cardView.render({
       ...product,
-      image: `${CDN_URL}${product.image}`,
+      image: `${CDN_URL}${product.image.replace('.svg', '.png')}`,
     })
 
     if (product.price === null) {

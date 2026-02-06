@@ -231,9 +231,9 @@ Presenter - презентер содержит основную логику п
 `constructor(protected events: IEvents, container: HTMLElement)` - В конструктор передается броекр событий и элемент разметки отвечающий за отображение числа товаров в корзине
 
 Поля класса:  
-`protected counterElement: HTMLElement` - элемент отечающий за отображение кол-ва товаров в корзине
+`private counterElement: HTMLElement` - элемент отечающий за отображение кол-ва товаров в корзине
 
-`protected basketButton: HTMLButtonElement` - элемент отечающий за кнопку открытия корзины
+`private basketButton: HTMLButtonElement` - элемент отечающий за кнопку открытия корзины
 
 
 Сеттеры:
@@ -248,19 +248,19 @@ Presenter - презентер содержит основную логику п
 Интерфейс:
 
 `interface IGallary {
-  catalog: HtmlElement[]
+  productList: HtmlElement[]
 }` - описывает структуру данных галереи товаров
 
 Конструктор:  
 `constructor(container: HTMLElement)` - В конструктор элемент разметки отвечающий за хранение карточек товаров
 
 Поля класса:  
-`protected counterElement: HTMLElement` - элемент отечающий за отображение кол-ва товаров в корзине
+`private counterElement: HTMLElement` - элемент отечающий за отображение кол-ва товаров в корзине
 
 
 Сеттеры:
 
-`set cards(cards: HTMLElement[])` - инициализация карточек товаров на странице
+`set productList(productList: HTMLElement[])` - устанавливает переданные в галерею товары
 
 
 #### Класс ModalContainer
@@ -269,20 +269,196 @@ Presenter - презентер содержит основную логику п
 
 
 Конструктор:  
-`constructor(protected events: IEvents, container: HTMLElement)` - В конструктор передается элемент элемент модального окна и брокер событий
+`constructor(protected events: IEvents, container: HTMLElement)` - В конструктор передается элемент модального окна и брокер событий
 
 Поля класса:  
-`protected counterElement: HTMLElement` - элемент отечающий за отображение кол-ва товаров в корзине
+`private closeButton: HTMLButtonElement` - элемент кнопки закрытия модального окна
 
-`protected modalContent: HTMLElement[]` - массив карточек товаров
+`private contentContainer: HTMLElement` - конейнер в который инициализируются  различные темплейты модальных окон
 
 
 Сеттеры:
 
-`set cards(cards: HTMLElement[])` - инициализация карточек товаров на странице
+`set modalData(dara: HTMLElement)` - инициализация темплейтов в модальном окне
 
 Методы: 
 
 `openModal():void` - открывает модальное окно
 
 `closeModal():void` - закрывает модальное окно
+
+#### Класс Basket
+
+Класс модального окна корзины
+
+
+Конструктор:  
+`constructor(protected events: IEvents, container: HTMLElement)` - В конструктор передается элемент корзины и брокер событий
+
+Поля класса:  
+  `private basketList: HTMLElement`  - элемент списка товаров в корзине
+  `private orderButton: HTMLButtonElement` - кнопка оформления заказа
+  `private orderPrice: HTMLElement ` - элемент с информацией об общей стоимости товаров в корзине
+
+
+Сеттеры:
+`set priceValue(value: number)` - устанавливает стоимость товаров в корзине
+`set basketListItems(value: HTMLElement[])` - утснавливает список товаров в корзине
+`set isOrderDisabled(value: boolean)` -  отвечает за состояние кнопки оформления заказа
+
+#### абстрактный Класс Card
+ Родительский класс для различных состояний карточек товаров
+
+ `constructor(protected events: IEvents, container: HTMLElement)` - В конструктор передается элемент карточки товара и брокер событий
+
+Поля класса:  
+  `protected titleElement: HTMLElement` - элемент заголовка карточки
+  `protected categoryElement?: HTMLElement` - элемент категории карточки
+  `protected priceElement: HTMLElement` - элемент цены карточки товара
+  `protected imageElement?: HTMLImageElement` - элемент изображения карточки товара
+
+
+Сеттеры:
+  `set id(value: string)` - устанавливает значение id карточки
+  `set title(value: string)` - устанавливает значение заголовка карточки
+  `set category(value: categoryKeys)`- устанавливает значение категории карточки
+  `set price(value: number | null)`- устанавливает значение цены карточки
+  `set image(value: string)`- устанавливает значение изображения и альт карточки
+
+  `type categoryKeys` - тип категорий товаров
+
+  #### Класс CardCatalog
+  Класс карточки отображающейся в галерее товаров
+
+  `constructor(events: IEvents, container: HTMLElement)` - - В конструктор передается элемент карточки товара и брокер событий
+
+  #### Класс CardPreviev
+  Класс карточки выбраной для просмотра доп. информации
+
+  `constructor(events: IEvents, container: HTMLElement)` - - В конструктор передается элемент карточки товара и брокер событий
+
+  Поля класса:
+  `protected descriptionElement: HTMLElement` - элемент с доп. информацией о товаре
+  `protected appendButton: HTMLButtonElement` - кнопка добавления/удаления товара из корзины
+
+  Сеттеры:
+  `set description(value: string)` - устанавливает описание товара
+  `set buttonDisabled(value: boolean)` - устанавливает состояние кнопки добавления/удаления товара
+  `set buttonText(value: string)` - утстанавливает текст кнопки удаления/добавления товара
+
+  #### Класс CardBasket
+  Класс карточки в корзине товаров
+
+  `constructor(events: IEvents, container: HTMLElement)` - - В конструктор передается элемент карточки товара и брокер событий
+
+  Поля класса:
+  `protected itemIndexElement: HTMLElement` - элемент с содержащий информацию о индексе товара в корзине
+  `protected removeButton: HTMLButtonElement` - кнопка начала оформления заказа
+
+  Сеттеры:
+  `set itemIndex(value: string)` - устанавливает индекс товара в корзине
+
+  #### Класс Form
+
+  Абстрактный родительский класс для форм заполняемых при оформлении заказа
+
+  `constructor(events: IEvents, container: HTMLElement)` - - В конструктор передается элемент формы и брокер событий
+
+  Поля класса:
+  `protected submitButton: HTMLButtonElement` - кнопка подтверждения заполнения форм
+  `protected formErrors: HTMLElement` - элемент с информацией об ошибках
+
+  Сеттеры:
+  `setErrors(errors: string[])` - устанавливает индекс товара в корзине
+
+  Методы:
+
+  `abstract onSubmit(): void` - валидация полей формы
+
+
+  #### Класс PaymentForm
+  Класс формы выбора способа оплаты и указания адреса доставки
+
+  `constructor(events: IEvents, container: HTMLElement)` - - В конструктор передается элемент формы и брокер событий
+  
+  Поля класса:
+  `protected paymentsButtons: HTMLButtonElement[]` - кнопки типов оплаты
+  `protected orderAdressInput: HTMLInputElement` - поле заполнения данных об адресе
+  
+
+  Методы:
+
+  `abstract onSubmit(): void` - валидация выбранных/заполненных данных
+  `setErrors(errors: string[])` - выводит возникшие ошибки незаполненных данных
+
+#### Класс ContactForm
+  Класс формы заполнения данных о покупателе
+
+  `constructor(events: IEvents, container: HTMLElement)` - - В конструктор передается элемент формы и брокер событий
+  
+  Поля класса:
+  `protected emailAdressInput: HTMLInputElement` - поле для указания эл. почты
+  `protected phoneNumberInput: HTMLInputElement` - поле для указания номера телефона
+  
+
+  Методы:
+
+  `abstract onSubmit(): void` - валидация выбранных/заполненных данных
+  `setErrors(errors: string[])` - выводит возникшие ошибки незаполненных данных
+
+
+  ### слой Представления
+
+  interface PresenterModels {
+  productList: ProductList
+  shoppingCart: ShoppingCart
+  buyer: Buyer
+} - интерфейс моделей данных
+
+interface PresenterViews {
+  gelleryView: Gellery
+  headerBasketView: HeaderBasket
+  modalContainerView: ModalContainer
+  basketView: Basket
+  paymentFormView: PaymentForm
+  contactsFormView: ContactForm
+  successTemplate: HTMLTemplateElement
+} - интерфейс моделей слоя View
+
+#### Класс Presenter 
+Презентер подписывается на все события, генерируемые моделями и представлениями для отрисовки карточек товаров и модальных окон, обновления данных 
+
+`constructor(
+    private apiCommunication: ApiCommunication,
+    private events: IEvents,
+    private models: PresenterModels,
+    private views: PresenterViews,
+  )` - в конструктор передаются апи для получения/отправки данных на сервер, модель событий, модели покупателя, товаров, корзины, и модели слоя View
+
+  Методы:
+  async init() - получение данных с сервера
+  private registerEvents() - регистрация обработчиков событий
+  private renderCatalog() - обработка отображения товаров в каталоге
+  private renderPreview() - обработка детальной информации о товаре
+  private renderBasketState()  - обработка состояния корзины
+  private renderSuccess(total: number) -  обработка окна успешного формления заказа 
+
+
+
+  ##### События
+
+  'productList:changed' - изменение списка товаров на странице
+  'product:selected' - выбор товара для получени доп. информации
+  'cart:changed' - получение данных выбранной карточки
+  'buyerInfo:changed' - изменение данных о покупателе
+
+  'modal:open' - открытие модального окна
+  'modal:close' - закрытие модального окна
+
+  'basket:open' - нажатие кнопки открытия корзины
+  'order:customer' - отправка данных покупателя
+  'contacts:change' - изменение контактных данных покупателя
+
+  'card:remove' - удаление товара из корзины
+  'card:select' - нажатие на карточку в каталоге
+  'card:addToBucket' - добавление карточки в корзину
