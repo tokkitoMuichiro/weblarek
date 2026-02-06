@@ -15,10 +15,10 @@ interface ICard {
 }
 
 export abstract class Card extends Component<ICard> {
-  protected title: HTMLElement
-  protected category: HTMLElement
-  protected price: HTMLElement
-  protected image?: HTMLImageElement
+  protected titleElement: HTMLElement
+  protected categoryElement?: HTMLElement
+  protected priceElement: HTMLElement
+  protected imageElement?: HTMLImageElement
 
   constructor(
     protected events: IEvents,
@@ -26,28 +26,35 @@ export abstract class Card extends Component<ICard> {
   ) {
     super(container)
 
-    this.title = ensureElement<HTMLElement>('.card__title', this.container)
-    this.category = ensureElement<HTMLElement>('.card__category', this.container)
-    this.price = ensureElement<HTMLElement>('.card__price', this.container)
-    this.image = ensureElement<HTMLImageElement>('.card__image', this.container)
+    this.titleElement = ensureElement<HTMLElement>('.card__title', this.container)
+    this.priceElement = ensureElement<HTMLElement>('.card__price', this.container)
+    this.categoryElement = this.container.querySelector<HTMLElement>('.card__category') ?? undefined
+    this.imageElement = this.container.querySelector<HTMLImageElement>('.card__image') ?? undefined
   }
 
-  set titleValue(value: string) {
-    this.title.textContent = value
+  set id(value: string) {
+    this.container.dataset.id = value
   }
 
-  set categoryValue(value: categoryKeys) {
-    this.category.textContent = value
-    this.category.className = `card__category ${categoryMap[value]}`
+  set title(value: string) {
+    this.titleElement.textContent = value
   }
 
-  set priceValue(value: number | null) {
-    this.price.textContent = value === null ? 'Бесценно' : `${value} синапсов`
+  set category(value: categoryKeys) {
+    if (!this.categoryElement) {
+      return
+    }
+    this.categoryElement.textContent = value
+    this.categoryElement.className = `card__category ${categoryMap[value]}`
   }
 
-  set imageValue(value: string) {
-    if (this.image) {
-      this.setImage(this.image, value, this.title.textContent ?? '')
+  set price(value: number | null) {
+    this.priceElement.textContent = value === null ? 'Бесценно' : `${value} синапсов`
+  }
+
+  set image(value: string) {
+    if (this.imageElement) {
+      this.setImage(this.imageElement, value, this.titleElement.textContent ?? '')
     }
   }
 }

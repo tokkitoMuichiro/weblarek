@@ -2,7 +2,7 @@ import { Component } from '../base/Component'
 import { ensureElement } from '../../utils/utils'
 
 interface IGellery {
-  productCards: HTMLElement[]
+  productList: HTMLElement[]
 }
 
 export class Gellery extends Component<IGellery> {

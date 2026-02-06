@@ -18,7 +18,7 @@ export class Basket extends Component<HTMLElement> {
     this.orderPrice = ensureElement<HTMLElement>('.basket__price', this.container)
 
     this.orderButton.addEventListener('click', () => {
-      this.events.emit('basket: order')
+      this.events.emit('basket:order')
     })
   }
 
@@ -28,5 +28,9 @@ export class Basket extends Component<HTMLElement> {
 
   set basketListItems(value: HTMLElement[]) {
     this.basketList.replaceChildren(...value)
+  }
+
+  set isOrderDisabled(value: boolean) {
+    this.orderButton.disabled = value
   }
 }

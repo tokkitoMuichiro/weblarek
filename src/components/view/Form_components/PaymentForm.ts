@@ -14,23 +14,30 @@ export class PaymentForm extends Form<IPayment> {
   constructor(events: IEvents, container: HTMLElement) {
     super(events, container)
 
-    this.paymentsButtons = Array.from(this.container.querySelectorAll<HTMLButtonElement>('.payment__button'))
+    this.paymentsButtons = this.paymentsButtons = Array.from(
+      this.container.querySelectorAll<HTMLButtonElement>('.order__buttons .button'),
+    )
     this.orderAdressInput = ensureElement<HTMLInputElement>('input[name=address]', this.container)
 
     this.paymentsButtons.forEach(button =>
       button.addEventListener('click', () => {
-        this.paymentsButtons.forEach(button => button.classList.remove('active'))
-        button.classList.add('active')
+        this.paymentsButtons.forEach(button => button.classList.remove('button_alt-active'))
+        button.classList.add('button_alt-active')
+        this.emitChange()
       }),
     )
+
+    this.orderAdressInput.addEventListener('input', () => {
+      this.emitChange()
+    })
   }
 
   protected onSubmit() {
-    const payment = this.paymentsButtons.find(button => button.classList.contains('active'))?.name
+    const payment = this.paymentsButtons.find(button => button.classList.contains('button_alt-active'))?.name
 
     const errors: string[] = []
 
-    if (!this.orderAdressInput.value) errors.push('Введите адрес')
+    if (!this.orderAdressInput.value) errors.push('Необходимо указать адресс')
     if (!payment) errors.push('Выберите способ оплаты')
 
     this.setErrors(errors)
@@ -41,5 +48,24 @@ export class PaymentForm extends Form<IPayment> {
         payment,
       })
     }
+  }
+  private emitChange() {
+    const payment = this.paymentsButtons.find(button => button.classList.contains('button_alt-active'))?.name
+    const errors: string[] = []
+
+    if (!this.orderAdressInput.value) errors.push('Введите адрес')
+    if (!payment) errors.push('Выберите способ оплаты')
+
+    this.setErrors(errors)
+
+    this.events.emit('order:change', {
+      address: this.orderAdressInput.value,
+      payment,
+    })
+  }
+
+  protected setErrors(errors: string[]) {
+    this.formErrors.textContent = errors.join(', ')
+    this.submitButton.disabled = errors.length > 0
   }
 }

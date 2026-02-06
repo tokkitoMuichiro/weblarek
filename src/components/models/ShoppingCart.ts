@@ -15,7 +15,7 @@ export class ShoppingCart {
     this.events.emit('cart:changed', { products: this.products })
   }
 
-  removeProduct(productId: String): void {
+  removeProduct(productId: string): void {
     this.products = this.products.filter(item => item.id !== productId)
     this.events.emit('cart:changed', { products: this.products })
   }
@@ -34,6 +34,6 @@ export class ShoppingCart {
   }
 
   hasProductById(id: string): boolean {
-    return this.products.some(product => (product.id = id))
+    return this.products.some(product => product.id === id)
   }
 }

@@ -3,21 +3,21 @@ import { IEvents } from '../../base/Events'
 import { ensureElement } from '../../../utils/utils'
 
 export class CardBasket extends Card {
-  protected itemIndex: HTMLElement
+  protected itemIndexElement: HTMLElement
   protected removeButton: HTMLButtonElement
 
   constructor(events: IEvents, container: HTMLElement) {
     super(events, container)
 
-    this.itemIndex = ensureElement<HTMLElement>('.basket__item-index', this.container)
+    this.itemIndexElement = ensureElement<HTMLElement>('.basket__item-index', this.container)
     this.removeButton = ensureElement<HTMLButtonElement>('.basket__item-delete', this.container)
 
     this.removeButton.addEventListener('click', () => {
-      this.events.emit('card:remove')
+      this.events.emit('card:remove', { id: this.container.dataset.id })
     })
   }
 
-  set itemIndexValue (value:string){
-    this.itemIndex.textContent = value
+  set itemIndex(value: string) {
+    this.itemIndexElement.textContent = value
   }
 }

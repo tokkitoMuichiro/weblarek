@@ -16,6 +16,14 @@ export class ContactForm extends Form<IContacts> {
 
     this.emailAdressInput = ensureElement<HTMLInputElement>('input[name=email]', this.container)
     this.phoneNumberInput = ensureElement<HTMLInputElement>('input[name=phone]', this.container)
+
+    this.emailAdressInput.addEventListener('input', () => {
+      this.emitChange()
+    })
+
+    this.phoneNumberInput.addEventListener('input', () => {
+      this.emitChange()
+    })
   }
 
   protected onSubmit() {
@@ -32,5 +40,19 @@ export class ContactForm extends Form<IContacts> {
         phone: this.phoneNumberInput.value,
       })
     }
+  }
+
+  private emitChange() {
+    const errors: string[] = []
+
+    if (!this.emailAdressInput.value) errors.push('Введите email')
+    if (!this.phoneNumberInput.value) errors.push('Введите телефон')
+
+    this.setErrors(errors)
+
+    this.events.emit('contacts:change', {
+      email: this.emailAdressInput.value,
+      phone: this.phoneNumberInput.value,
+    })
   }
 }

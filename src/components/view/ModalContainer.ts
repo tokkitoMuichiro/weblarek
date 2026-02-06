@@ -18,6 +18,12 @@ export class ModalContainer extends Component<HTMLElement> {
     this.closeButton.addEventListener('click', () => {
       this.closeModal()
     })
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        this.closeModal()
+      }
+    })
   }
 
   set modalData(data: HTMLElement) {
@@ -25,12 +31,12 @@ export class ModalContainer extends Component<HTMLElement> {
   }
 
   openModal(): void {
-    this.contentContainer.classList.add('modal_active')
+    this.container.classList.add('modal_active')
     this.events.emit('modal:open')
   }
 
   closeModal(): void {
-    this.contentContainer.classList.remove('modal_active')
+    this.container.classList.remove('modal_active')
     this.events.emit('modal:close')
   }
 }
