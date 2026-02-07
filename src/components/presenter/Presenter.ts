@@ -14,7 +14,7 @@ import { CardPreviev } from '../view/Cards_component/CardPreviev'
 import { CardBasket } from '../view/Cards_component/CardBasket'
 import { cloneTemplate } from '../../utils/utils'
 import { CDN_URL } from '../../utils/constants'
-import { IBuyer } from '../../types'
+import { IBuyer, IValidationInfo } from '../../types'
 
 interface PresenterViews {
   gelleryView: Gellery
@@ -108,40 +108,35 @@ export class Presenter {
     this.events.on('basket:open', openBasket)
 
     const openPayment = () => {
+      this.handleBuyerInfoChanged()
       this.views.modalContainerView.modalData = this.views.paymentFormView.render()
       this.views.modalContainerView.openModal()
     }
 
     this.events.on('basket:order', openPayment)
 
+    this.events.on('buyerInfo:changed', () => {
+      this.handleBuyerInfoChanged()
+    })
+
     this.events.on<Partial<IBuyer>>('order:change', data => {
-      this.models.buyer.setBuyerInfo({
-        address: data.address,
-        payment: data.payment,
-      })
+      this.models.buyer.setBuyerInfo(data)
     })
 
     this.events.on<Partial<IBuyer>>('contacts:change', data => {
-      this.models.buyer.setBuyerInfo({
-        email: data.email,
-        phone: data.phone,
-      })
+      this.models.buyer.setBuyerInfo(data)
     })
 
     this.events.on<Partial<IBuyer>>('order:payment', data => {
-      this.models.buyer.setBuyerInfo({
-        address: data.address,
-        payment: data.payment,
-      })
+      this.models.buyer.setBuyerInfo(data)
+      this.handleBuyerInfoChanged()
       this.views.modalContainerView.modalData = this.views.contactsFormView.render()
       this.views.modalContainerView.openModal()
     })
 
     this.events.on<Partial<IBuyer>>('order:customer', async data => {
-      this.models.buyer.setBuyerInfo({
-        email: data.email,
-        phone: data.phone,
-      })
+      this.models.buyer.setBuyerInfo(data)
+      this.handleBuyerInfoChanged()
 
       const buyerInfo = this.models.buyer.getBuyerInfo()
       const products = this.models.shoppingCart.getProducts()
@@ -240,5 +235,41 @@ export class Presenter {
 
     this.views.modalContainerView.modalData = success
     this.views.modalContainerView.openModal()
+  }
+
+  private handleBuyerInfoChanged() {
+    const buyerInfo = this.models.buyer.getBuyerInfo()
+    const validationInfo = this.models.buyer.validateBuyerInfo()
+    const paymentErrors: string[] = []
+    const contactsErrors: string[] = []
+
+    if (typeof validationInfo !== 'string') {
+      if (validationInfo.payment) {
+        paymentErrors.push(validationInfo.payment)
+      }
+      if (validationInfo.address) {
+        paymentErrors.push(validationInfo.address)
+      }
+      if (validationInfo.email) {
+        contactsErrors.push(validationInfo.email)
+      }
+      if (validationInfo.phone) {
+        contactsErrors.push(validationInfo.phone)
+      }
+    }
+
+    this.views.paymentFormView.setErrors(paymentErrors.join(', '))
+    this.views.paymentFormView.setSubmitDisabled(paymentErrors.length > 0)
+    this.views.paymentFormView.render({
+      payment: buyerInfo.payment,
+      address: buyerInfo.address,
+    })
+
+    this.views.contactsFormView.setErrors(contactsErrors.join(', '))
+    this.views.contactsFormView.setSubmitDisabled(contactsErrors.length > 0)
+    this.views.contactsFormView.render({
+      email: buyerInfo.email,
+      phone: buyerInfo.phone,
+    })
   }
 }

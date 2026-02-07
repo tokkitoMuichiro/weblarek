@@ -18,41 +18,26 @@ export class ContactForm extends Form<IContacts> {
     this.phoneNumberInput = ensureElement<HTMLInputElement>('input[name=phone]', this.container)
 
     this.emailAdressInput.addEventListener('input', () => {
-      this.emitChange()
+      this.events.emit('contacts:change', { email: this.emailAdressInput.value })
     })
 
     this.phoneNumberInput.addEventListener('input', () => {
-      this.emitChange()
+      this.events.emit('contacts:change', { phone: this.phoneNumberInput.value })
     })
   }
 
   protected onSubmit() {
-    const errors: string[] = []
-
-    if (!this.emailAdressInput.value) errors.push('Введите email')
-    if (!this.phoneNumberInput.value) errors.push('Введите телефон')
-
-    this.setErrors(errors)
-
-    if (errors.length === 0) {
-      this.events.emit('order:customer', {
-        email: this.emailAdressInput.value,
-        phone: this.phoneNumberInput.value,
-      })
-    }
-  }
-
-  private emitChange() {
-    const errors: string[] = []
-
-    if (!this.emailAdressInput.value) errors.push('Введите email')
-    if (!this.phoneNumberInput.value) errors.push('Введите телефон')
-
-    this.setErrors(errors)
-
-    this.events.emit('contacts:change', {
+    this.events.emit('order:customer', {
       email: this.emailAdressInput.value,
       phone: this.phoneNumberInput.value,
     })
+  }
+
+  set email(value: string) {
+    this.emailAdressInput.value = value
+  }
+
+  set phone(value: string) {
+    this.phoneNumberInput.value = value
   }
 }

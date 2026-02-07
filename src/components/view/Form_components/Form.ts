@@ -15,14 +15,17 @@ export abstract class Form<T> extends Component<T> {
     this.submitButton = ensureElement<HTMLButtonElement>('button[type=submit]', this.container)
     this.formErrors = ensureElement<HTMLElement>('.form__errors', this.container)
 
-    this.container.addEventListener('submit', e => {
-      e.preventDefault()
+    this.container.addEventListener('submit', event => {
+      event.preventDefault()
       this.onSubmit()
     })
   }
-  protected setErrors(errors: string[]) {
-    this.formErrors.textContent = errors.join(', ')
-    this.submitButton.disabled = errors.length > 0
+  public setErrors(errors: string) {
+    this.formErrors.textContent = errors
+  }
+
+  public setSubmitDisabled(disabled: boolean) {
+    this.submitButton.disabled = disabled
   }
 
   protected abstract onSubmit(): void

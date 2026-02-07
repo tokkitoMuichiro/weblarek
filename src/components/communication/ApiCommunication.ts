@@ -18,6 +18,7 @@ export class ApiCommunication {
   async createOrder(sendingInfo: IApiBuyerSending): Promise<TApiBuyerResponse> {
     try {
       const response = await this._api.post<TApiBuyerResponse>('/order/', sendingInfo)
+      console.log(`данные о заказе успешно отправленны`)
       return response
     } catch (error) {
       throw new Error(`Возникла ошибка при создании заказа`)

@@ -4,7 +4,7 @@ import { IEvents } from '../../base/Events'
 
 interface IPayment {
   payment: string
-  adress: string
+  address: string
 }
 
 export class PaymentForm extends Form<IPayment> {
@@ -21,51 +21,32 @@ export class PaymentForm extends Form<IPayment> {
 
     this.paymentsButtons.forEach(button =>
       button.addEventListener('click', () => {
-        this.paymentsButtons.forEach(button => button.classList.remove('button_alt-active'))
-        button.classList.add('button_alt-active')
-        this.emitChange()
+        this.events.emit('order:change', { payment: button.name })
       }),
     )
 
     this.orderAdressInput.addEventListener('input', () => {
-      this.emitChange()
+      this.events.emit('order:change', { address: this.orderAdressInput.value })
     })
   }
 
   protected onSubmit() {
     const payment = this.paymentsButtons.find(button => button.classList.contains('button_alt-active'))?.name
 
-    const errors: string[] = []
-
-    if (!this.orderAdressInput.value) errors.push('Необходимо указать адресс')
-    if (!payment) errors.push('Выберите способ оплаты')
-
-    this.setErrors(errors)
-
-    if (errors.length === 0) {
-      this.events.emit('order:payment', {
-        address: this.orderAdressInput.value,
-        payment,
-      })
-    }
-  }
-  private emitChange() {
-    const payment = this.paymentsButtons.find(button => button.classList.contains('button_alt-active'))?.name
-    const errors: string[] = []
-
-    if (!this.orderAdressInput.value) errors.push('Введите адрес')
-    if (!payment) errors.push('Выберите способ оплаты')
-
-    this.setErrors(errors)
-
-    this.events.emit('order:change', {
+    this.events.emit('order:payment', {
       address: this.orderAdressInput.value,
-      payment,
+      payment: payment ?? '',
     })
   }
 
-  protected setErrors(errors: string[]) {
-    this.formErrors.textContent = errors.join(', ')
-    this.submitButton.disabled = errors.length > 0
+  set payment(value: string) {
+    this.paymentsButtons.forEach(button => {
+      const isActive = button.name === value
+      button.classList.toggle('button_alt-active', isActive)
+    })
+  }
+
+  set address(value: string) {
+    this.orderAdressInput.value = value
   }
 }

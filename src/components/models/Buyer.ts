@@ -14,20 +14,20 @@ export class Buyer {
 
   setBuyerInfo(buyerData: Partial<IBuyer>): void {
     if (buyerData) {
-      if (buyerData.payment) {
+      if (buyerData.payment !== undefined) {
         this.payment = buyerData.payment
       }
-      if (buyerData.email) {
+      if (buyerData.email !== undefined) {
         this.email = buyerData.email
       }
-      if (buyerData.phone) {
+      if (buyerData.phone !== undefined) {
         this.phone = buyerData.phone
       }
-      if (buyerData.address) {
+      if (buyerData.address !== undefined) {
         this.address = buyerData.address
       }
     }
-    this.events.emit('buyerInfo:changed', this.getBuyerInfo())
+    this.events.emit('buyerInfo:changed')
   }
 
   getBuyerInfo(): IBuyer {
@@ -44,31 +44,26 @@ export class Buyer {
     this.email = ''
     this.phone = ''
     this.address = ''
-    this.events.emit('buyerInfo:changed', this.getBuyerInfo())
+    this.events.emit('buyerInfo:changed')
   }
 
-  validateBuyerInfo(): IValidationInfo | String {
+  validateBuyerInfo(): IValidationInfo {
     const validationInfo: IValidationInfo = {}
-    let hasErrors = false
 
     if (!this.payment) {
       validationInfo.payment = 'Не выбран вид оплаты'
-      hasErrors = true
     }
 
     if (!this.email) {
       validationInfo.email = 'Не заполнен Email'
-      hasErrors = true
     }
 
     if (!this.phone) {
       validationInfo.phone = 'Не заполнен телефон'
-      hasErrors = true
     }
 
     if (!this.address) {
       validationInfo.address = 'Не заполнен адрес'
-      hasErrors = true
     }
 
     return validationInfo

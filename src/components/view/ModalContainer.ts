@@ -24,6 +24,11 @@ export class ModalContainer extends Component<HTMLElement> {
         this.closeModal()
       }
     })
+    this.container.addEventListener('click', event => {
+      if (event.target === this.container) {
+        this.closeModal()
+      }
+    })
   }
 
   set modalData(data: HTMLElement) {
