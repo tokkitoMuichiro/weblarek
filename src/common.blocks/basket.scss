@@ -1,19 +1,17 @@
-@use "variables" as *;
-@use "mixins";
+@use 'variables' as *;
+@use 'mixins';
 
 .basket {
   @include mixins.flex(column);
   gap: 2rem;
   height: 60vh;
-  justify-content:space-between ;
-  align-content: space-around;
   &__list {
     padding: 0 2rem 0 0;
     margin: 0;
     flex-grow: 1;
     overflow-y: auto;
   }
-  
+
   &__list:not(:has(> *))::before {
     content: 'Корзина пуста';
     opacity: 0.3;
