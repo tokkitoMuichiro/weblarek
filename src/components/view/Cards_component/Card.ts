@@ -1,7 +1,6 @@
 import { Component } from '../../base/Component'
 import { ensureElement } from '../../../utils/utils'
 import { categoryMap } from '../../../utils/constants'
-import { IEvents } from '../../base/Events'
 import { IProduct } from '../../../types'
 
 type categoryKeys = 'софт-скил' | 'хард-скил' | 'кнопка' | 'дополнительное' | 'другое'
@@ -12,20 +11,13 @@ export abstract class Card extends Component<IProduct> {
   protected priceElement: HTMLElement
   protected imageElement?: HTMLImageElement
 
-  constructor(
-    protected events: IEvents,
-    container: HTMLElement,
-  ) {
+  constructor(container: HTMLElement) {
     super(container)
 
     this.titleElement = ensureElement<HTMLElement>('.card__title', this.container)
     this.priceElement = ensureElement<HTMLElement>('.card__price', this.container)
     this.categoryElement = this.container.querySelector<HTMLElement>('.card__category') ?? undefined
     this.imageElement = this.container.querySelector<HTMLImageElement>('.card__image') ?? undefined
-  }
-
-  set id(value: string) {
-    this.container.dataset.id = value
   }
 
   set title(value: string) {

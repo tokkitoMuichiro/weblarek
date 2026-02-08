@@ -1,12 +1,9 @@
 import { Card } from './Card'
-import { IEvents } from '../../base/Events'
 
 export class CardCatalog extends Card {
-  constructor(events: IEvents, container: HTMLElement) {
-    super(events, container)
+  constructor(container: HTMLElement, onClick: () => void) {
+    super(container)
 
-    this.container.addEventListener('click', () => {
-      this.events.emit('card:select', { id: this.container.dataset.id })
-    })
+    this.container.addEventListener('click', onClick)
   }
 }

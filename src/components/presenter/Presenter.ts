@@ -75,10 +75,9 @@ export class Presenter {
     })
 
     this.events.on<{ id?: string }>('card:addToBucket', data => {
-      if (!data?.id) {
-        return
-      }
-      const product = this.models.productList.getProductById(data.id)
+      const product = data?.id
+        ? this.models.productList.getProductById(data.id)
+        : this.models.productList.getSelectedProduct()
       if (!product) {
         return
       }
@@ -164,7 +163,9 @@ export class Presenter {
   private renderCatalog() {
     const products = this.models.productList.getProducts()
     const cards = products.map(product => {
-      const cardView = new CardCatalog(this.events, cloneTemplate('#card-catalog'))
+      const cardView = new CardCatalog(cloneTemplate('#card-catalog'), () => {
+        this.events.emit('card:select', { id: product.id })
+      })
       return cardView.render({
         ...product,
         image: `${CDN_URL}${product.image.replace('.svg', '.png')}`,
@@ -180,7 +181,9 @@ export class Presenter {
       return
     }
 
-    const cardView = new CardPreviev(this.events, cloneTemplate('#card-preview'))
+    const cardView = new CardPreviev(cloneTemplate('#card-preview'), () => {
+      this.events.emit('card:addToBucket')
+    })
     const card = cardView.render({
       ...product,
       image: `${CDN_URL}${product.image.replace('.svg', '.png')}`,
@@ -206,7 +209,9 @@ export class Presenter {
     const totalPrice = this.models.shoppingCart.getProductsPrise()
 
     const items = products.map((product, index) => {
-      const cardView = new CardBasket(this.events, cloneTemplate('#card-basket'))
+      const cardView = new CardBasket(cloneTemplate('#card-basket'), () => {
+        this.events.emit('card:remove', { id: product.id })
+      })
       const card = cardView.render(product)
       cardView.itemIndex = String(index + 1)
       return card
